@@ -3,34 +3,8 @@ import SignalAddButton from "./SignalAddButton";
 
 const SignalBar = () => {
     return (
-        <aside className={"bg-gray-300 border-r border-black w-56 overflow-auto"}>
+        <aside className={"bg-gray-300 border-r border-black w-56 overflow-y-auto min-w-min"}>
             <SignalAddButton/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
-            <ElementBlock/>
             <ElementBlock/>
         </aside>
     );

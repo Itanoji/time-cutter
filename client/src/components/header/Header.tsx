@@ -1,3 +1,5 @@
+import { observer } from "mobx-react-lite";
+import diagram from "../../store/Diagram";
 const Header = () => {
     return (
         <header className={"bg-gray-200 p-1 border-b border-black flex flex-row font"}>
@@ -13,7 +15,7 @@ const Header = () => {
                 </div>
             </div>
             <div className={"flex-grow text-center font-bold text-2xl"}>
-                DiagramName
+                {diagram.name}
             </div>
             <div className={"mr-5 text-lg mt-4"}>
                 Login
@@ -22,4 +24,4 @@ const Header = () => {
     );
 }
 
-export default Header;
+export default observer(Header);
