@@ -1,11 +1,12 @@
-import { makeAutoObservable } from "mobx";
+import { autorun, makeAutoObservable } from "mobx";
 
 class Diagram {
     name!: string;
     steps!: number;
     showAxes!: boolean;
     showGrid!: boolean;
-    stepInterval!: number;
+    gridInterval!: number;
+    signalHeight!: number;
 
     constructor() {
         const diagramStr = localStorage.getItem("diagram");
@@ -15,22 +16,53 @@ class Diagram {
             } catch(error) {
                 console.error("Ошибка при преобразовании JSON:", error);
                 this.fillByDefault();
-                localStorage.setItem("diagram", JSON.stringify(this));
             }
         } else {
             this.fillByDefault();
-            localStorage.setItem("diagram", JSON.stringify(this));
         }
         makeAutoObservable(this);
+
+        autorun(() => {
+            this.saveToLocalStorage();
+          });
+      
     }
 
-    fillByDefault() {
+    private fillByDefault() {
         this.name = 'DefaultName';
         this.steps = 15;
         this.showAxes = false;
         this.showGrid = true;
-        this.stepInterval = 1;
+        this.gridInterval = 1;
+        this.signalHeight = 20;
     }
+    
+    //Сохранить в хранилище
+    saveToLocalStorage() {
+        const dataToSave = JSON.stringify(this);
+        localStorage.setItem("diagram", dataToSave);
+    }
+
+    //Имя
+    setName(name:string) {
+        this.name = name;
+    }
+
+    //Интервал сетки
+    setGridInterval(stepInterval:number) {
+        this.gridInterval = stepInterval;
+    }
+
+    //Показывать сетку
+    setShowGrid(showGrid:boolean) {
+        this.showGrid = showGrid;
+    }
+
+    //Высота сигнала
+    setSignalHeight(signalHeight:number) {
+        this.signalHeight = signalHeight;
+    }
+
 }
 
 const diagram = new Diagram();

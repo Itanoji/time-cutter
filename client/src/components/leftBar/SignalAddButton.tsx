@@ -1,3 +1,5 @@
+import { observer } from "mobx-react-lite";
+
 const SignalAddButton = () => {
     return (
         <div className={"bg-slate-300 border-b border-black space-x-10"}>
@@ -13,4 +15,4 @@ const SignalAddButton = () => {
     );
 }
 
-export default SignalAddButton;
+export default observer(SignalAddButton);
