@@ -1,4 +1,6 @@
 import { autorun, makeAutoObservable } from "mobx";
+import { Signal } from "./Signal";
+import { SignalArea } from "./Areas";
 
 class Diagram {
     name!: string;
@@ -7,6 +9,7 @@ class Diagram {
     showGrid!: boolean;
     gridInterval!: number;
     signalHeight!: number;
+    signals!: Signal[];
 
     constructor() {
         const diagramStr = localStorage.getItem("diagram");
@@ -35,6 +38,7 @@ class Diagram {
         this.showGrid = true;
         this.gridInterval = 1;
         this.signalHeight = 20;
+        this.signals = [];
     }
     
     //Сохранить в хранилище
@@ -61,6 +65,34 @@ class Diagram {
     //Высота сигнала
     setSignalHeight(signalHeight:number) {
         this.signalHeight = signalHeight;
+    }
+
+    //Добавить сигнал
+    addSignal(signal: Signal) {
+        this.signals.push(signal);
+    }
+
+    removeSignal(index: number) {
+        this.signals.splice(index, 1);
+    }
+
+    //Добавить область к сигналу
+    addAreaToSignal(signalNum: number, area: SignalArea) {
+        this.signals[signalNum].addArea(area);
+    }
+
+    //Установить область
+    setAreaInSignal(signalIndex: number, areaIndex: number, area: SignalArea) {
+        this.signals[signalIndex].setArea(areaIndex, area);
+    }
+
+    //Удалить область
+    removeArea(signalIndex: number, areaIndex: number) {
+        this.signals[signalIndex].remove(areaIndex);
+    }
+
+    insertArea(signalIndex: number, areaIndex: number, area: SignalArea) {
+        this.signals[signalIndex].insert(areaIndex, area);
     }
 
 }
