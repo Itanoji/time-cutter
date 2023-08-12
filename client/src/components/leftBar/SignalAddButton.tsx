@@ -39,7 +39,7 @@ const SignalAddButton = () => {
     return (
         <div className={"bg-slate-300 border-b border-black space-x-3 flex"}>
             <div className={"my-2 space-x-2"}>
-                <input className={"ml-2 border-2 border-slate-600 rounded-sm text-center w-16 text-lg"} placeholder="Name" onChange={handleNameChanged}/>
+                <input className={"ml-2 border-2 border-slate-600 rounded-sm text-center w-14 text-lg"} placeholder="Name" onChange={handleNameChanged}/>
                 <select value={type} className={"pl-2 pr-2 border-2 border-slate-600 rounded-lg self-center bg-slate-100 text-center text-lg cursor-pointer"} onChange={handleTypeChanged}>
                     <option value={SignalType.CLK}>{SignalType.CLK}</option>
                     <option value={SignalType.BIT}>{SignalType.BIT}</option>

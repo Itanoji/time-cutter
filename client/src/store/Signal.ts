@@ -27,12 +27,6 @@ export abstract class Signal {
         this.areas.splice(index,1);
     }
 
-    swap(index1: number, index2: number) {
-        const temp = this.areas[index1];
-        this.areas[index1] = this.areas[index2];
-        this.areas[index2] = temp;
-    }
-
     insert(index:number, area: SignalArea) {
         this.areas.splice(index, 0, area);
     }

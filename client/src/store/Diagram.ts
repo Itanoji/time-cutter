@@ -95,6 +95,12 @@ class Diagram {
         this.signals[signalIndex].insert(areaIndex, area);
     }
 
+    swap(index1: number, index2: number) {
+        const temp = this.signals[index1];
+        this.signals[index1] = this.signals[index2];
+        this.signals[index2] = temp;
+    }
+
 }
 
 const diagram = new Diagram();
