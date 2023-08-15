@@ -3,6 +3,7 @@ import {IoIosArrowUp, IoIosArrowDown} from 'react-icons/io';
 import { Signal } from '../../store/Signal';
 import { observer } from 'mobx-react-lite';
 import diagram from '../../store/Diagram';
+import active from '../../store/ActiveElement';
 
 interface BlockProps {
     index: number;
@@ -13,6 +14,9 @@ const ElementBlock = ({index, signal}: BlockProps) => {
 
     const onDelete = () => {
         diagram.removeSignal(index);
+        if(active.signalIndex === index) {
+            active.setDiagramActive();
+        }
     }
 
     const onMoveUp = () => {
@@ -23,6 +27,10 @@ const ElementBlock = ({index, signal}: BlockProps) => {
         diagram.swap(index, index+1);
     }
 
+    const onNameClicked =() => {
+        active.setActiveSignal(index);
+    }
+
     return (
         <div className={"flex flex-row items-center pt-1 pb-1 border-b border-black bg-gray-200"}>
             <div className={"flex flex-col ml-2"}>
@@ -30,7 +38,7 @@ const ElementBlock = ({index, signal}: BlockProps) => {
                 {index !== diagram.signals.length-1? <IoIosArrowDown className={"hover:border hover:border-black hover:rounded cursor-pointer"} onClick={onMoveDown}/> : ""}
             </div>
             <div className={"flex-grow text-center"}>
-                <button className={"hover:underline hover:font-semibold active:font-bold text-xl"}>
+                <button className={"hover:underline hover:font-semibold active:font-bold text-xl"} onClick={onNameClicked}>
                     {signal.name}
                 </button>
             </div>

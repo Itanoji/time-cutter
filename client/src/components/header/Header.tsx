@@ -1,6 +1,12 @@
 import { observer } from "mobx-react-lite";
 import diagram from "../../store/Diagram";
+import active from "../../store/ActiveElement";
 const Header = () => {
+
+    const onNameClicked = () => {
+        active.setDiagramActive();
+    }
+
     return (
         <header className={"bg-gray-200 p-1 border-b border-black flex flex-row font"}>
             <div>
@@ -14,8 +20,10 @@ const Header = () => {
                     <u>E</u>dit
                 </div>
             </div>
-            <div className={"flex-grow text-center font-bold text-2xl"}>
-                {diagram.name}
+            <div className={"flex-grow text-center font-bold text-3xl"}>
+                <button className={"hover:underline"} onClick={onNameClicked}>
+                    {diagram.name}
+                </button>
             </div>
             <div className={"mr-5 text-lg mt-4"}>
                 Login
