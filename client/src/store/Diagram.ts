@@ -1,5 +1,5 @@
-import { autorun, makeAutoObservable } from "mobx";
-import { Signal } from "./Signal";
+import { autorun, makeAutoObservable} from "mobx";
+import { Signal, SignalType } from "./Signal";
 import { SignalArea } from "./Areas";
 
 class Diagram {
@@ -99,6 +99,29 @@ class Diagram {
         const temp = this.signals[index1];
         this.signals[index1] = this.signals[index2];
         this.signals[index2] = temp;
+    }
+
+    changeSignal(index: number, signal: Signal) {
+        this.signals[index] = signal;
+    }
+
+    changeSignalName(index: number, name: string) {
+        this.signals[index].name = name;
+    }
+
+    changeSignalType(index: number, type: SignalType) {
+        if(this.signals[index].type !== SignalType.BUS && type === SignalType.BUS) {
+            this.signals[index].areas = [];
+        }
+        this.signals[index].type = type;
+    }
+
+    changeSignalStep(index: number, step: number) {
+        this.signals[index].basicAreaLength = step;
+    }
+
+    setAreasToSignal(index: number, areas: SignalArea[]) {
+        this.signals[index].areas = areas;
     }
 
 }

@@ -1,8 +1,8 @@
 export enum BitAreaValue {
-    HIGH = 1,
-    LOW = 0,
+    HIGH = '1',
+    LOW = '0',
     Z = 'z',
-    UNKNOW = 'u'
+    UNKNOW = '~'
 }
 
 /**
@@ -24,7 +24,7 @@ export class BitArea extends SignalArea {
 
     constructor(length: number, value: BitAreaValue) {
         super(length);
-        this.value = BitAreaValue.HIGH;
+        this.value = value;
     }
 }
 

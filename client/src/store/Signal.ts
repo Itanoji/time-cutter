@@ -13,6 +13,7 @@ export abstract class Signal {
     name: string;
     type: SignalType;
     areas!: SignalArea[];
+    basicAreaLength: number = 1;
 
     constructor(name: string, type: SignalType) {
         this.name = name;
@@ -29,6 +30,18 @@ export abstract class Signal {
 
     insert(index:number, area: SignalArea) {
         this.areas.splice(index, 0, area);
+    }
+
+    changeName(name: string) {
+        this.name = name;
+    }
+
+    changeType(type: SignalType) {
+        if(this.type !== SignalType.BUS && type === SignalType.BUS) {
+            this.areas = [];
+        }
+        
+        this.type = type;
     }
     
 }
