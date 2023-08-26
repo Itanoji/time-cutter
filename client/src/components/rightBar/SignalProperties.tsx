@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Signal, SignalType } from "../../store/Signal";
 import {useState, useEffect} from 'react';
 import BitProperties from "./BitProperties";
+import BusProperties from "./BusProperties";
 
 interface SignalProps {
     index: number;
@@ -12,10 +13,12 @@ interface SignalProps {
 const SignalProperties = ({index, signal}: SignalProps) => {
     const [name, setName] = useState(signal.name);
     const [type, setType] = useState(signal.type);
+    const [color, setColor] = useState(signal.color);
 
     useEffect(() => {
         setName(signal.name);
         setType(signal.type);
+        setColor(signal.color);
     },[index,signal]);
 
     const handleNameChanged = (e:any) => {
@@ -31,10 +34,15 @@ const SignalProperties = ({index, signal}: SignalProps) => {
         diagram.changeSignalType(index, e.currentTarget.value);
     }
 
+    const hanldeColorChanged = (e:any) => {
+        setColor(e.currentTarget.value);
+        diagram.changeSignalColor(index, e.currentTarget.value);
+    }
+
 
     return (
         <div className={"space-y-3"}>
-            <div className={"border-b border-black flex justify-center"}>
+            <div className={"border-b border-black flex justify-center bg-slate-300"}>
                 <input value={name} className={"border-2 border-slate-600 rounded-sm mt-4 mb-4 text-center"} onChange={handleNameChanged}/>
             </div>
             <div className={"flex flex-row justify-center space-x-2"}>
@@ -45,9 +53,13 @@ const SignalProperties = ({index, signal}: SignalProps) => {
                     <option value={SignalType.BUS}>{SignalType.BUS}</option>
                 </select>
             </div>
-            {
-                type === SignalType.CLK || type === SignalType.BIT ? <BitProperties index={index} signal={signal}/> : ""
-            }
+            <div className={"flex flex-row justify-center space-x-2"}>
+                <label className="text-center">Color</label>
+                <input value={color} type="color" className={"w-6 h-6 cursor-pointer self-center"} onChange={hanldeColorChanged}/>
+
+            </div>
+            {type === SignalType.CLK || type === SignalType.BIT ? <BitProperties index={index} signal={signal}/> : ""}
+            {type === SignalType.BUS ? <BusProperties index={index} signal={signal}/> : ""}
         </div>
     );
 }

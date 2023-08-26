@@ -1,6 +1,6 @@
 import { autorun, makeAutoObservable} from "mobx";
 import { Signal, SignalType } from "./Signal";
-import { SignalArea } from "./Areas";
+import { BusArea, SignalArea } from "./Areas";
 
 class Diagram {
     name!: string;
@@ -78,7 +78,7 @@ class Diagram {
 
     //Добавить область к сигналу
     addAreaToSignal(signalNum: number, area: SignalArea) {
-        this.signals[signalNum].addArea(area);
+        this.signals[signalNum].areas.push(area);
     }
 
     //Установить область
@@ -88,7 +88,7 @@ class Diagram {
 
     //Удалить область
     removeArea(signalIndex: number, areaIndex: number) {
-        this.signals[signalIndex].remove(areaIndex);
+        this.signals[signalIndex].areas.splice(areaIndex, 1);
     }
 
     insertArea(signalIndex: number, areaIndex: number, area: SignalArea) {
@@ -120,10 +120,35 @@ class Diagram {
         this.signals[index].basicAreaLength = step;
     }
 
+    changeSignalColor(index: number, color: string) {
+        this.signals[index].color = color;
+    }
+
     setAreasToSignal(index: number, areas: SignalArea[]) {
         this.signals[index].areas = areas;
     }
 
+    swapAreas(signalIndex: number, index1: number, index2: number) {
+        const temp = this.signals[signalIndex].areas[index1];
+        this.signals[signalIndex].areas[index1] = this.signals[signalIndex].areas[index2];
+        this.signals[signalIndex].areas[index2] = temp;
+    }
+
+    changeBusAreaValue(signal: number, index: number, value: string) {
+        (this.signals[signal].areas[index] as BusArea).value = value;
+    }
+
+    changeAreaLength(signal: number, index: number, length: number) {
+        this.signals[signal].areas[index].length = length;
+    }
+
+    changeBusAreaFillColor(signal: number, index: number, color: string) {
+        (this.signals[signal].areas[index] as BusArea).fillColor = color;
+    }
+
+    changeBusAreaHatching(signal: number, index: number, hatching: boolean) {
+        (this.signals[signal].areas[index] as BusArea).hatching = hatching;
+    }
 }
 
 const diagram = new Diagram();

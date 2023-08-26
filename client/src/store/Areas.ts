@@ -34,10 +34,14 @@ export class BitArea extends SignalArea {
 export class BusArea extends SignalArea {
     value: string;
     fillColor: string;
+    hatching: boolean;
+    textColor: string;
 
     constructor(length: number, value: string) {
         super(length);
         this.value = value;
-        this.fillColor = '';
+        this.fillColor = '#FFFFFF';
+        this.hatching = false;
+        this.textColor = '#000000';
     }
 }

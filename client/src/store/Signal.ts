@@ -13,6 +13,7 @@ export abstract class Signal {
     name: string;
     type: SignalType;
     areas!: SignalArea[];
+    color: string = '#000000';
     basicAreaLength: number = 1;
 
     constructor(name: string, type: SignalType) {
