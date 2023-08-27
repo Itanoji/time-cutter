@@ -8,6 +8,7 @@ class Diagram {
     showAxes!: boolean;
     showGrid!: boolean;
     gridInterval!: number;
+    gridSteps!:number;
     signalHeight!: number;
     signals!: Signal[];
 
@@ -37,6 +38,7 @@ class Diagram {
         this.showAxes = false;
         this.showGrid = true;
         this.gridInterval = 1;
+        this.gridSteps = 20;
         this.signalHeight = 20;
         this.signals = [];
     }
@@ -55,6 +57,10 @@ class Diagram {
     //Интервал сетки
     setGridInterval(stepInterval:number) {
         this.gridInterval = stepInterval;
+    }
+
+    setGridSteps(steps:number) {
+        this.gridSteps = steps;
     }
 
     //Показывать сетку
@@ -148,6 +154,18 @@ class Diagram {
 
     changeBusAreaHatching(signal: number, index: number, hatching: boolean) {
         (this.signals[signal].areas[index] as BusArea).hatching = hatching;
+    }
+
+    getMaxWidth() {
+        let max = 0;
+        for(let i = 0; i < this.signals.length; i++) {
+            let length = 0;
+            for(let j = 0; j < this.signals[i].areas.length; j++) {
+                length+=this.signals[i].areas[j].length;
+            }
+            if(max < length) max = length;
+        }
+        return max;
     }
 }
 

@@ -27,6 +27,20 @@ const DiagramProperties = () => {
         diagram.setGridInterval(num);
     }
 
+    const handleGridStepsChanged = (e:any) => {
+        if(e.currentTarget.value.length === 0) {
+            e.currentTarget.value = '1';
+        }
+
+        let num = parseInt(e.currentTarget.value);
+
+        if(num < 1 ) {
+            num = 1;
+        }
+
+        diagram.setGridSteps(num);
+    }
+
     //Изменение отображения сетки
     const handleShowGridChanged = (e: any) => {
         diagram.setShowGrid(e.currentTarget.checked);
@@ -59,6 +73,10 @@ const DiagramProperties = () => {
             <div className={"flex flex-col justify-center"}>
                 <label className="text-center">Grid interval</label>
                 <input className={"border-2 border-slate-600 rounded-sm w-20 self-center  text-center mt-1"} type="number" value={diagram.gridInterval} onChange={handleGridInvervalChanged}/>
+            </div>
+            <div className={"flex flex-col justify-center"}>
+                <label className="text-center">Grid steps</label>
+                <input className={"border-2 border-slate-600 rounded-sm w-20 self-center  text-center mt-1"} type="number" value={diagram.gridSteps} onChange={handleGridStepsChanged}/>
             </div>
             <div className={"flex flex-col justify-center"}>
                 <label className="text-center">Signal height</label>

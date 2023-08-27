@@ -3,6 +3,7 @@ import Header from './components/header/Header';
 import SignalBar from './components/leftBar/SignalBar';
 import Footer from './components/footer/Footer';
 import PropertiesBar from './components/rightBar/PropertiesBar';
+import Canvas from './components/diagram/Canvas';
 
 const App = () => {
   return (
@@ -10,7 +11,9 @@ const App = () => {
         <Header/>
         <main className={"flex flex-row flex-grow overflow-auto"}>
           <SignalBar/>
-          <div className={"flex-grow"}></div>
+          <div className={" overflow-auto w-full"}>
+            <Canvas/>
+          </div>
           <PropertiesBar/>
         </main>
         <Footer/>

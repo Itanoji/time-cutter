@@ -5,7 +5,7 @@ import diagram from "../../store/Diagram";
 
 const SignalBar = () => {
     return (
-        <aside className={"bg-gray-300 border-r border-black w-56 overflow-y-auto min-w-min"}>
+        <aside className={"bg-gray-300 border-r border-black w-56 overflow-y-auto min-w-fit"}>
             <SignalAddButton/>
             {diagram.signals.map((item, index) => 
                 <ElementBlock signal={item} index={index} key={index}/>
