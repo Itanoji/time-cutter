@@ -20,8 +20,6 @@ const DiagramProperties = () => {
 
         if(num < 1 ) {
             num = 1;
-        } else if(num > 20) {
-           num = 20;
         }
 
         diagram.setGridInterval(num);
@@ -58,8 +56,6 @@ const DiagramProperties = () => {
         let num = parseInt(e.currentTarget.value);
         if(num < 1 ) {
             num = 1;
-        } else if(num > 20) {
-            num = 20;
         }
 
         diagram.setSignalHeight(num);
