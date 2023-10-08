@@ -76,7 +76,7 @@ const BusAreaBlock = ({signalIndex, areaIndex, area}: BusAreaProps) => {
             </div>
             <div className="flex flex-row justify-center space-x-4">
                 <div className="flex flex-row justify-center space-x-2">
-                    <label className="text-center">Fill color</label>
+                    <label className="text-center">Fill</label>
                     <input type="color" value={fillColor} onChange={handleFillColorChanged} className={"w-6 h-6 cursor-pointer self-center"}/>
                 </div>
                 <div className="flex flex-row justify-center space-x-2">

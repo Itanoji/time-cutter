@@ -1,3 +1,4 @@
+import { makeObservable, observable } from "mobx";
 import { BitArea, BusArea, SignalArea } from "./Areas";
 
 export enum SignalType {
@@ -19,6 +20,13 @@ export abstract class Signal {
     constructor(name: string, type: SignalType) {
         this.name = name;
         this.type = type;
+        makeObservable(this, {
+            name: observable,
+            type: observable,
+            areas: observable,
+            color: observable,
+            basicAreaLength: observable
+          });
     }
 
     abstract addArea(area: SignalArea):void;

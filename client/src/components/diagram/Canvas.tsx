@@ -2,7 +2,7 @@ import diagram from '../../store/Diagram';
 import active from '../../store/ActiveElement';
 import { observer } from 'mobx-react-lite';
 import { BitArea, BitAreaValue } from '../../store/Areas';
-import { BitSignal, SignalType } from '../../store/Signal';
+import { BitSignal, BusSignal, ClkSignal, SignalType } from '../../store/Signal';
 
 const Canvas = () => {
 
@@ -12,6 +12,10 @@ const Canvas = () => {
     const GRID_PADDING_Y = 20;
     const SIGNAL_PADDING = 20;
     const DELAY = 5;
+
+    const basicStep = diagram.gridInterval+MIN_INTERVAL;
+    const basicHeight = diagram.signalHeight + MIN_HEGHT;
+    
 
 
     
@@ -46,7 +50,7 @@ const Canvas = () => {
                         textAnchor='end' 
                         dominantBaseline={'hanging'} 
                         fontWeight={'bold'} 
-                        fill="blue"
+                        fill={s.color}
                         className={"cursor-pointer hover:underline"}
                         onClick={()=>active.setActiveSignal(index)}>
                             {s.name}
@@ -59,8 +63,10 @@ const Canvas = () => {
             const startY = index * (diagram.signalHeight+MIN_HEGHT+SIGNAL_PADDING) + GRID_PADDING_Y + 10;
             if(s.type === SignalType.BIT) {
                 return drawBitSignal(startY, s as BitSignal);
-            } else {
-                return '';
+            } else if(s.type === SignalType.CLK) {
+                return drawClkSignal(startY, s as ClkSignal);
+            } else if(s.type === SignalType.BUS) {
+               return drawBusSignal(startY, s as BusSignal);
             }
 
         })
@@ -76,7 +82,7 @@ const Canvas = () => {
             prev = a.value;
         })
 
-        return <path d={bitPath} stroke='black' fill="none" stroke-width={2}/>
+        return <path d={bitPath} stroke={s.color} fill="none" stroke-width={2}/>
     }
 
     function drawBitArea(prev: BitAreaValue, x: number, y:number, area: BitArea, basicAreaLength: number) {
@@ -100,10 +106,58 @@ const Canvas = () => {
                }
             }
         }
+        if(area.value === BitAreaValue.UNKNOW) {
+            
+        }
         
         //Рисуем линию
         areaPath+= ` H ${x+area.length * (diagram.gridInterval+MIN_INTERVAL)}`;
         return areaPath;
+    }
+
+    function drawClkSignal(startY: number, s: ClkSignal) {
+        let x = GRID_PADDING_X;
+        let prev : BitAreaValue;
+        let bitPath = ``;
+        s.areas.map((a, index) => {
+            bitPath+=drawClkArea(prev, x, startY, a, s.basicAreaLength); 
+            x+=a.length * (diagram.gridInterval+MIN_INTERVAL);
+            prev = a.value;
+        })
+
+        return <path d={bitPath} stroke={s.color} fill="none" stroke-width={2}/>
+    }
+
+    function drawClkArea(prev: BitAreaValue, x: number, y:number, area: BitArea, basicAreaLength: number) {
+        let areaPath = ``;
+        if(prev == null) {
+             if(area.value === BitAreaValue.HIGH || BitAreaValue.UNKNOW) {
+                areaPath += `M ${x} ${y}`;
+             } else if(area.value === BitAreaValue.LOW) {
+                areaPath += `M ${x} ${y+diagram.signalHeight + MIN_HEGHT}`;
+             } else if(area.value === BitAreaValue.Z) {
+                areaPath += `M ${x} ${y + (diagram.signalHeight + MIN_HEGHT)/2}`;
+             }
+        } else { //Рисуем переход
+            if(area.value !== prev) {
+               if(area.value === BitAreaValue.HIGH || area.value === BitAreaValue.UNKNOW) {
+                areaPath+= ` L ${x} ${y}`;
+               } else if(area.value === BitAreaValue.LOW) {
+                    areaPath+= ` L ${x} ${y + diagram.signalHeight + MIN_HEGHT}`;
+               } else if(area.value === BitAreaValue.Z) {
+                    areaPath+= ` L ${x} ${y + (diagram.signalHeight + MIN_HEGHT)/2}`;
+               }
+            }
+        }
+        
+        //Рисуем линию
+        areaPath+= ` H ${x+area.length * (diagram.gridInterval+MIN_INTERVAL)}`;
+        return areaPath;
+    }
+
+    function drawBusSignal(y: number, s: BusSignal) {
+        let x = GRID_PADDING_X;
+        return <g/>
     }
 
 }

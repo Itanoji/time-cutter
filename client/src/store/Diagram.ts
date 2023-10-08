@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable} from "mobx";
+import { autorun, makeAutoObservable, reaction} from "mobx";
 import { Signal, SignalType } from "./Signal";
 import { BusArea, SignalArea } from "./Areas";
 
@@ -11,6 +11,7 @@ class Diagram {
     gridSteps!:number;
     signalHeight!: number;
     signals!: Signal[];
+    refresher: boolean = true;
 
     constructor() {
         const diagramStr = localStorage.getItem("diagram");
@@ -24,11 +25,15 @@ class Diagram {
         } else {
             this.fillByDefault();
         }
+
         makeAutoObservable(this);
 
         autorun(() => {
             this.saveToLocalStorage();
           });
+
+        reaction(() => this.signals.length, ()=> this.saveToLocalStorage());
+
       
     }
 
@@ -37,7 +42,7 @@ class Diagram {
         this.steps = 15;
         this.showAxes = false;
         this.showGrid = true;
-        this.gridInterval = 1;
+        this.gridInterval = 20;
         this.gridSteps = 20;
         this.signalHeight = 20;
         this.signals = [];
@@ -166,6 +171,11 @@ class Diagram {
             if(max < length) max = length;
         }
         return max;
+    }
+
+    //Обновить принудительно
+    refresh() {
+        this.refresher = !this.refresher;
     }
 }
 

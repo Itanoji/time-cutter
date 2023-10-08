@@ -28,7 +28,7 @@ const BitProperties = ({index, signal}: SignalProps) => {
 
     const handleValuesChanged = (e:any) => {
         setValues(e.currentTarget.value);
-        const areas = e.currentTarget.value.split('').map((a: BitAreaValue) => new BitArea(1,a));
+        const areas = e.currentTarget.value.split('').map((a: BitAreaValue) => new BitArea(signal.basicAreaLength,a));
         diagram.setAreasToSignal(index, areas);
     }
 

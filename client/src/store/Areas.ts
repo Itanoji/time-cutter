@@ -1,3 +1,5 @@
+import { makeObservable, observable } from "mobx";
+
 export enum BitAreaValue {
     HIGH = '1',
     LOW = '0',
@@ -43,5 +45,12 @@ export class BusArea extends SignalArea {
         this.fillColor = '#FFFFFF';
         this.hatching = false;
         this.textColor = '#000000';
+        makeObservable(this, {
+            value: observable,
+            fillColor: observable,
+            hatching: observable,
+            textColor: observable,
+            length: observable
+          });
     }
 }
