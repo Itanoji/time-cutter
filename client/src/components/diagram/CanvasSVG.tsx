@@ -2,9 +2,10 @@ import diagram from '../../store/Diagram';
 import {useEffect} from 'react';
 import active from '../../store/ActiveElement';
 import { observer } from 'mobx-react-lite';
-import { BitArea, BitAreaValue } from '../../store/Areas';
+import { BitArea, BitAreaValue, SignalArea } from '../../store/Areas';
 import { BitSignal, BusSignal, ClkSignal, Signal, SignalType } from '../../store/Signal';
 import { SVG, Svg } from '@svgdotjs/svg.js';
+import { sign } from 'crypto';
 
 const CanvasSVG = () => {
 
@@ -14,6 +15,7 @@ const CanvasSVG = () => {
     const GRID_PADDING_Y = 20;
     const SIGNAL_PADDING = 20;
     const DELAY = 7;
+    
 
     const BASIC_STEP = diagram.gridInterval+MIN_INTERVAL;
     const BASIC_HEIGHT = diagram.signalHeight + MIN_HEGHT;
@@ -28,6 +30,7 @@ const CanvasSVG = () => {
         }
 
         drawSignals(svg);
+        drawEdit(svg);
         return svg;
     }
     
@@ -229,6 +232,7 @@ const CanvasSVG = () => {
          return areaPath;
      }
 
+    //Отрисовка шины
     function drawBusSignal(svg: Svg, y: number, s: BusSignal) {
         let x = GRID_PADDING_X;
         const pattern = svg.pattern(10, 10, function(add) {
@@ -300,9 +304,13 @@ const CanvasSVG = () => {
             //Добавляем текст
             if(a.value !== null) {
                 let fontSize = 15;
+                let localDelay = 0;
+                if(index > 0) {
+                    localDelay += DELAY;
+                }
                 const text = svg.text(a.value)
-                                .move(x+a.length*BASIC_STEP/2, y+BASIC_HEIGHT/4)
-                                .font({ family: 'Arial', size: 15, anchor: 'middle', weight: "bold"})
+                                .move(x+(localDelay+ a.length*BASIC_STEP)/2, y+BASIC_HEIGHT/4)
+                                .font({ family: 'Arial', size: 15, anchor: 'middle', weight: 900})
                                 .fill("black")
                                 .attr({ 'text-anchor': 'middle'});
                 while(text.length() > a.length*BASIC_STEP) {
@@ -315,6 +323,120 @@ const CanvasSVG = () => {
             x+=a.length * BASIC_STEP;
 
         })
+    }
+
+
+    //Отрисовка для редактирования
+    function drawEdit(svg: Svg) {
+        const basicY = BASIC_HEIGHT+SIGNAL_PADDING;
+        const padding = GRID_PADDING_Y + 10;
+        diagram.signals.forEach((signal, index) => {
+            const y = index * basicY + padding;
+            let x = GRID_PADDING_X;
+            
+            //Рисуем верхние и нижние линии для рисования битовых сигналов
+            if(signal.type != SignalType.BUS) {
+                signal.areas.forEach((area, areaIndex) => {
+                    //Рисуем линию сверху
+                    drawEditLine(svg, index, areaIndex, area, x, y, BitAreaValue.HIGH);
+                    //Рисуем линию снизу
+                    drawEditLine(svg, index, areaIndex, area, x, y+BASIC_HEIGHT, BitAreaValue.LOW);
+                     x+=area.length*BASIC_STEP;
+                });
+                //Рисуем для след области
+                 //Рисуем линию сверху
+                 drawEditLineNew(svg, index, signal, x, y, BitAreaValue.HIGH);
+                 //Рисуем линию снизу
+                 drawEditLineNew(svg, index, signal, x, y+BASIC_HEIGHT, BitAreaValue.LOW);
+            }
+
+            x = GRID_PADDING_X;
+            //Рисуем области для выбора
+            signal.areas.forEach((area, areaIndex) => {
+                let editRect = svg.rect(area.length*BASIC_STEP,BASIC_HEIGHT)
+                                  .move(x, y)
+                                  .fill('#CCE5FF')
+                                  .stroke({width:1, color: 'black'})
+                                  .attr({cursor: 'pointer'})
+                                  .opacity(0);
+                editRect.on('mouseover', () => {
+                    if(active.signalIndex != index || active.areas === undefined || active.areas?.indexOf(areaIndex) === -1) {
+                        editRect.opacity(0.5);
+                    }
+                });
+                editRect.on('mouseout', () => {
+                    if(active.signalIndex != index || active.areas === undefined ||active.areas?.indexOf(areaIndex) === -1) {
+                        editRect.opacity(0);
+                    }
+                })
+                editRect.on('click', () => {
+                    if(active.signalIndex != index || active.areas === undefined ||active.areas?.indexOf(areaIndex) === -1) {
+                        active.setAreaToActive(index, areaIndex);
+                    }
+                })
+
+                if(active.signalIndex === index && active.areas !== undefined && active.areas?.indexOf(areaIndex) !== -1) {
+                    editRect.opacity(0.7);
+                }
+
+                editRect.on('contextmenu', (e:any) => {
+                    e.preventDefault();
+                    addCustomContextMenu(svg, x, y);
+                });
+                svg.add(editRect);
+                x+=area.length * BASIC_STEP                  
+            })
+        })
+    }
+
+    function drawEditLine(svg: Svg, signalIndex: number, areaIndex: number, area: SignalArea, x: number, y: number, setValue: BitAreaValue) {
+        //Рисуем саму линию для отображения
+        let upperLine = svg.line(x, y, x+area.length*BASIC_STEP, y)
+        .stroke({width: 1, color: 'black'})
+        .opacity(0)
+        //Хитбокс для линии
+        let upperClick = svg.line(x,y,x+area.length*BASIC_STEP, y)
+        .stroke({width:8, color: 'black'})
+        .opacity(0)
+        .attr('cursor', 'pointer')
+        .on('mouseover', () => {
+            upperLine.opacity(1);
+        })
+        .on('mouseout', () => {
+            upperLine.opacity(0);
+        })
+        .on('click', () => {
+            diagram.changeBitAreaValue(signalIndex, areaIndex, setValue);
+        })
+    }
+
+    function drawEditLineNew(svg: Svg, signalIndex: number, signal: Signal, x: number, y: number, setValue: BitAreaValue) {
+        //Рисуем саму линию для отображения
+        let upperLine = svg.line(x, y, x+signal.basicAreaLength*BASIC_STEP, y)
+        .stroke({width: 1, color: 'black'})
+        .opacity(0)
+        //Хитбокс для линии
+        let upperClick = svg.line(x,y,x+signal.basicAreaLength*BASIC_STEP, y)
+        .stroke({width:8, color: 'black'})
+        .opacity(0)
+        .attr('cursor', 'pointer')
+        .on('mouseover', () => {
+            upperLine.opacity(1);
+        })
+        .on('mouseout', () => {
+            upperLine.opacity(0);
+        })
+        .on('click', () => {
+            const newArea = new BitArea(signal.basicAreaLength, setValue);
+            diagram.addAreaToSignal(signalIndex, newArea);
+        })
+    }
+
+    function addCustomContextMenu(svg: Svg, x: number, y: number) {
+        const customContextMenu = svg.group();
+
+        // Добавьте пункты меню
+        customContextMenu.rect(60, 60).move(x,y).stroke({width:1, color: 'black'}).fill('none');
     }
 
    

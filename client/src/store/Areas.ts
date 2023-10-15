@@ -27,6 +27,10 @@ export class BitArea extends SignalArea {
     constructor(length: number, value: BitAreaValue) {
         super(length);
         this.value = value;
+        makeObservable(this, {
+            value: observable,
+            length: observable
+          });
     }
 }
 

@@ -157,7 +157,28 @@ const Canvas = () => {
 
     function drawBusSignal(y: number, s: BusSignal) {
         let x = GRID_PADDING_X;
-        return <g/>
+        return (<g>{
+            s.areas.map((a,index) => {
+                let path = ``;
+                let res = ``;
+                if(index === 0) {
+                    res = `<g><line stroke={s.color} fill="none" stroke-width={2} x1={x} x2={x+a.length*(diagram.gridInterval+MIN_INTERVAL)} y1={y} y2={y}/>
+                              <line stroke={s.color} fill="none" stroke-width={2} x1={x} x2={x+a.length*(diagram.gridInterval+MIN_INTERVAL)} y1={y+diagram.signalHeight + MIN_HEGHT} y2={y+diagram.signalHeight + MIN_HEGHT}/>
+                              <rect fill={a.fillColor} fill-opacity="0.3" stroke="none" x={x} width={a.length*(diagram.gridInterval+MIN_INTERVAL)} y={y} height={diagram.signalHeight + MIN_HEGHT}/> 
+                            </g>`;
+                }
+                else {
+                    res = `<g>
+                            <line stroke={s.color} fill="none" stroke-width={2} x1={x} y1={y} x2={x+DELAY/2} y2={y + (diagram.signalHeight + MIN_HEGHT)/2}/>
+                            <line stroke={s.color} fill="none" stroke-width={2} x1={x} y1={y + diagram.signalHeight + MIN_HEGHT} x2={x+DELAY/2} y2={y + (diagram.signalHeight + MIN_HEGHT)/2} />
+                            <path stroke={s.color} fill={a.fillColor} fill-opacity="0.3"stroke-width={2} d={"M ${x+DELAY/2} ${y + (diagram.signalHeight + MIN_HEGHT)/2} L ${x+DELAY} ${y} H ${x+DELAY+ a.length*basicStep} M ${x+DELAY/2} ${y + (diagram.signalHeight + MIN_HEGHT)/2} L ${x+DELAY} ${y + basicHeight} H ${x+DELAY+ a.length*basicStep}"}
+                          </g>`
+                }
+                return res;
+            })
+            }
+
+            </g>);
     }
 
 }

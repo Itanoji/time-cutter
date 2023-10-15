@@ -26,6 +26,20 @@ class ActiveElement {
         this.signalIndex = undefined;
         this.areas = undefined;
     }
+
+    addAreaToActive(signalIndex: number, areaIndex: number) {
+        if(this.signalIndex !== signalIndex) {
+            this.signalIndex = signalIndex;
+            this.areas = [];
+        } else {
+            this.areas?.push(areaIndex)
+        }
+    }
+
+    setAreaToActive(signalIndex: number, areaIndex: number) {
+        this.signalIndex = signalIndex;
+        this.areas = [areaIndex];
+    }
 }
 
 const active = new ActiveElement();

@@ -1,6 +1,6 @@
 import { autorun, makeAutoObservable, reaction} from "mobx";
 import { Signal, SignalType } from "./Signal";
-import { BusArea, SignalArea } from "./Areas";
+import { BitArea, BitAreaValue, BusArea, SignalArea } from "./Areas";
 
 class Diagram {
     name!: string;
@@ -159,6 +159,10 @@ class Diagram {
 
     changeBusAreaHatching(signal: number, index: number, hatching: boolean) {
         (this.signals[signal].areas[index] as BusArea).hatching = hatching;
+    }
+
+    changeBitAreaValue(signal: number, index: number, value: BitAreaValue) {
+        (this.signals[signal].areas[index] as BitArea).value = value;
     }
 
     getMaxWidth() {
