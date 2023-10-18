@@ -1,37 +1,23 @@
+import active from "../../store/ActiveElement";
 import diagram from "../../store/Diagram";
 import { observer } from "mobx-react-lite";
-import { Signal } from "../../store/Signal";
-import { useEffect } from 'react';
-import { BusArea } from "../../store/Areas";
-import BusAreaBlock from "./BusAreaBlock";
+import { SignalType } from "../../store/Signal";
+import BitAreaProperties from "./BitAreaProperties";
 
-interface AreaProps {
-    signalIndex: number;
-    areas:[]                                                                                                                                                                              
-}
-
-const BusProperties = ({index, signal}: SignalProps) => {
-
-    useEffect(() => {
-    },[index,signal]);
-
-    const addArea = () => {
-        const area = new BusArea(1,'');
-        diagram.addAreaToSignal(index, area);
+const AreaProperties = () => {
+    if(active.signalIndex === undefined || active.areas === undefined) {
+        return null;
     }
 
-
-
     return (
-       <div className="space-y-3 justify-items-center flex flex-col">
-            <button className={"text-center font-semibold border-2 border-slate-600 rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300 w-24 self-center"} onClick={addArea}>Add area</button>
-            <div className="border-t border-black bg-gray-200">
-            {signal.areas.map((a) => a as BusArea).map((item, areaIndex) => 
-            <BusAreaBlock signalIndex={index} areaIndex={areaIndex} area={item} key={areaIndex}/>
-            )}
+       <div className="space-y-1 justify-items-center flex flex-col">
+            <div className={"border-b border-black flex justify-center bg-slate-300"}>
+                <label className={"my-1 mx-2 text-center font-bold"}>Areas of {diagram.signals[active.signalIndex].name}</label>
             </div>
+            {diagram.signals[active.signalIndex!].type !== SignalType.BUS? <BitAreaProperties/> : null} 
+
        </div>
     );
 }
 
-export default observer(BusProperties);                                                                                                                                                                                                                      Ь                                                           
+export default observer(AreaProperties);

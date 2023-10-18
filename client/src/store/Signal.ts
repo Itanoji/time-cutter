@@ -25,7 +25,7 @@ export abstract class Signal {
             type: observable,
             areas: observable,
             color: observable,
-            basicAreaLength: observable
+            basicAreaLength: observable,
           });
     }
 

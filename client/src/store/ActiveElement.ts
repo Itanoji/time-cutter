@@ -31,9 +31,10 @@ class ActiveElement {
         if(this.signalIndex !== signalIndex) {
             this.signalIndex = signalIndex;
             this.areas = [];
-        } else {
-            this.areas?.push(areaIndex)
         }
+        this.areas?.push(areaIndex)
+        this.type = ElementType.Areas;
+
     }
 
     removeActiveAreas() {
@@ -47,6 +48,7 @@ class ActiveElement {
     setAreaToActive(signalIndex: number, areaIndex: number) {
         this.signalIndex = signalIndex;
         this.areas = [areaIndex];
+        this.type = ElementType.Areas;
     }
 }
 
