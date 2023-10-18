@@ -47,7 +47,7 @@ const SignalAddButton = () => {
                 </select>
             </div>
             <div className="my-2 border-l border-black">
-                <button className={"ml-2 pl-2 pr-2 text-lg text-center font-semibold border-2 border-slate-600 rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300"}
+                <button className={"ml-2 mr-2 pl-2 pr-2 text-lg text-center font-semibold border-2 border-slate-600 rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300"}
                         onClick={addSignal}>
                     Add
                 </button>

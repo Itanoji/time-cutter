@@ -3,7 +3,6 @@ import Header from './components/header/Header';
 import SignalBar from './components/leftBar/SignalBar';
 import Footer from './components/footer/Footer';
 import PropertiesBar from './components/rightBar/PropertiesBar';
-import Canvas from './components/diagram/Canvas';
 import CanvasSVG from './components/diagram/CanvasSVG';
 
 const App = () => {

@@ -36,6 +36,14 @@ class ActiveElement {
         }
     }
 
+    removeActiveAreas() {
+        this.areas = [];
+    }
+
+    removeActiveArea(index: number) {
+        this.areas?.splice(this.areas.indexOf(index), 1);
+    }
+
     setAreaToActive(signalIndex: number, areaIndex: number) {
         this.signalIndex = signalIndex;
         this.areas = [areaIndex];

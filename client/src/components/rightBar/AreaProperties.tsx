@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import { BusArea } from "../../store/Areas";
 import BusAreaBlock from "./BusAreaBlock";
 
-interface SignalProps {
-    index: number;
-    signal: Signal;
+interface AreaProps {
+    signalIndex: number;
+    areas:[]                                                                                                                                                                              
 }
 
 const BusProperties = ({index, signal}: SignalProps) => {
@@ -34,4 +34,4 @@ const BusProperties = ({index, signal}: SignalProps) => {
     );
 }
 
-export default observer(BusProperties);
+export default observer(BusProperties);                                                                                                                                                                                                                      Ь                                                           

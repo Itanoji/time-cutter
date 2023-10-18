@@ -103,7 +103,7 @@ class Diagram {
     }
 
     insertArea(signalIndex: number, areaIndex: number, area: SignalArea) {
-        this.signals[signalIndex].insert(areaIndex, area);
+        this.signals[signalIndex].areas.splice(areaIndex, 0, area);
     }
 
     swap(index1: number, index2: number) {

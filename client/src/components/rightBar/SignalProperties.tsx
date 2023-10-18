@@ -43,7 +43,7 @@ const SignalProperties = ({index, signal}: SignalProps) => {
     return (
         <div className={"space-y-3"}>
             <div className={"border-b border-black flex justify-center bg-slate-300"}>
-                <input value={name} className={"border-2 border-slate-600 rounded-sm mt-4 mb-4 text-center"} onChange={handleNameChanged}/>
+                <input value={name} className={"border-2 border-slate-600 rounded-sm mt-4 mb-4 mx-2 text-center"} onChange={handleNameChanged}/>
             </div>
             <div className={"flex flex-row justify-center space-x-2"}>
                 <label className="text-center">Signal Type</label>

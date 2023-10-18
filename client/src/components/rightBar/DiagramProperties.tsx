@@ -64,7 +64,7 @@ const DiagramProperties = () => {
     return (
         <div className={"space-y-3"}>
             <div className={"border-b border-black flex justify-center bg-slate-300"}>
-                <input className={"border-2 border-slate-600 rounded-sm mt-4 mb-4 text-center"} value={diagram.name} onChange={handleNameChanged}/>
+                <input className={"border-2 border-slate-600 rounded-sm mt-4 mb-4 mx-3 text-center"} value={diagram.name} onChange={handleNameChanged}/>
             </div>
             <div className={"flex flex-col justify-center"}>
                 <label className="text-center">Grid interval</label>

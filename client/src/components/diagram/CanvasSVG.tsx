@@ -1,13 +1,18 @@
 import diagram from '../../store/Diagram';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import active from '../../store/ActiveElement';
 import { observer } from 'mobx-react-lite';
-import { BitArea, BitAreaValue, SignalArea } from '../../store/Areas';
+import { BitArea, BitAreaValue, BusArea, SignalArea } from '../../store/Areas';
 import { BitSignal, BusSignal, ClkSignal, Signal, SignalType } from '../../store/Signal';
 import { SVG, Svg } from '@svgdotjs/svg.js';
-import { sign } from 'crypto';
+import AreaContextMenu from './AreaContextMenu';
 
 const CanvasSVG = () => {
+    const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number }>({
+        isOpen: false,
+        x: 0,
+        y: 0,
+      });
 
     const MIN_INTERVAL = 20;
     const MIN_HEGHT = 20;
@@ -19,6 +24,103 @@ const CanvasSVG = () => {
 
     const BASIC_STEP = diagram.gridInterval+MIN_INTERVAL;
     const BASIC_HEIGHT = diagram.signalHeight + MIN_HEGHT;
+
+    const handleContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+        setContextMenu({ isOpen: true, x: e.clientX, y: e.clientY });
+      };
+    
+      const handleCloseContextMenu = () => {
+        setContextMenu({ isOpen: false, x: 0, y: 0 });
+      };
+    
+      const handleAddRight = () => {
+        // Добавление справа
+        if(active.signalIndex === undefined || active.areas === undefined) {
+            return;
+        }
+
+        const currSignal = diagram.signals[active.signalIndex];
+        let addedArea;
+        if(currSignal.type === SignalType.BIT || currSignal.type === SignalType.CLK) {
+            addedArea = new BitArea(currSignal.basicAreaLength, BitAreaValue.UNKNOW);
+        } else {
+            addedArea = new BusArea(currSignal.basicAreaLength, "");
+            addedArea.hatching = true;
+        }
+
+        for(let i = 0; i < active.areas.length; i++) {
+            diagram.insertArea(active.signalIndex, active.areas[i]+1, addedArea);
+            //Сдвигаем остальные вправо если они после
+            for(let j = i+1; j < active.areas.length; j++) {
+                if(active.areas[j] > active.areas[i]) {
+                    active.areas[j] = active.areas[j] + 1;
+                }
+            }
+        }
+        active.removeActiveAreas();
+        handleCloseContextMenu();
+        handleCloseContextMenu();
+      };
+    
+      const handleAddLeft = () => {
+        if(active.signalIndex === undefined || active.areas === undefined) {
+            return;
+        }
+
+        const currSignal = diagram.signals[active.signalIndex];
+        let addedArea;
+        if(currSignal.type === SignalType.BIT || currSignal.type === SignalType.CLK) {
+            addedArea = new BitArea(currSignal.basicAreaLength, BitAreaValue.UNKNOW);
+        } else {
+            addedArea = new BusArea(currSignal.basicAreaLength, "");
+            addedArea.hatching = true;
+        }
+
+        for(let i = 0; i < active.areas.length; i++) {
+            diagram.insertArea(active.signalIndex, active.areas[i], addedArea);
+            //Сдвигаем остальные вправо если они после
+            for(let j = i+1; j < active.areas.length; j++) {
+                if(active.areas[j] > active.areas[i]) {
+                    active.areas[j] = active.areas[j] + 1;
+                }
+            }
+        }
+        active.removeActiveAreas();
+        handleCloseContextMenu();
+      };
+    
+      const handleDelete = () => {
+        // Удаление
+        if(active.signalIndex === undefined || active.areas === undefined) {
+            return;
+        }
+
+        for(let i = 0; i < active.areas?.length; i++) {
+            const removedInd = active.areas[i];
+            diagram.removeArea(active.signalIndex, removedInd); //удаляем из диаграммы
+            for(let j = i + 1; j < active.areas.length; j++) { //сдвигаем остальные индексы влево если они больше этого
+                if(removedInd < active.areas[j]) {
+                    active.areas[j] = active.areas[j] - 1 ;
+                }
+            }
+        }
+
+        active.removeActiveAreas();
+        handleCloseContextMenu();
+      };
+
+      const handleDefault = (e:any) => {
+        e.preventDefault();
+        handleCloseContextMenu();
+      }
+
+      const handleEscKey = (e:any) => {
+        if (e.key === 'Escape') {
+          // Сброс активных областей при нажатии "Esc"
+          active.removeActiveAreas();
+        }
+      };
 
 
     const createSvg = () => {
@@ -45,13 +147,46 @@ const CanvasSVG = () => {
             svgContainer.appendChild(svg.node);
         }
       },[createSvg()]);
-    
 
 
+    // Добавляем обработчик клика на весь документ для закрытия контекстного меню
+    useEffect(() => {
+        const handleClickOutsideContextMenu = (e: MouseEvent) => {
+            if (contextMenu.isOpen) {
+                handleCloseContextMenu();
+            } 
+        };
+
+        document.addEventListener('click', handleClickOutsideContextMenu);
+
+        return () => {
+        document.removeEventListener('click', handleClickOutsideContextMenu);
+        };
+    }, [contextMenu.isOpen]);
+
+
+    // Добавляем обработчик события keydown внутри компонента
+    useEffect(() => {
+        window.addEventListener('keydown', handleEscKey);
+
+        return () => {
+        window.removeEventListener('keydown', handleEscKey);
+        };
+    }, []); 
     
     return (
-        <div id="svg-container">
-        </div>
+        <>
+         <div onContextMenu={handleDefault} id="svg-container"/>
+         <AreaContextMenu
+            isOpen={contextMenu.isOpen}
+            x={contextMenu.x}
+            y={contextMenu.y}
+            onClose={handleCloseContextMenu}
+            onAddRight={handleAddRight}
+            onAddLeft={handleAddLeft}
+            onDelete={handleDelete}
+        />
+        </>
     );
 
 
@@ -335,7 +470,7 @@ const CanvasSVG = () => {
             let x = GRID_PADDING_X;
             
             //Рисуем верхние и нижние линии для рисования битовых сигналов
-            if(signal.type != SignalType.BUS) {
+            if(signal.type !== SignalType.BUS) {
                 signal.areas.forEach((area, areaIndex) => {
                     //Рисуем линию сверху
                     drawEditLine(svg, index, areaIndex, area, x, y, BitAreaValue.HIGH);
@@ -353,6 +488,9 @@ const CanvasSVG = () => {
             x = GRID_PADDING_X;
             //Рисуем области для выбора
             signal.areas.forEach((area, areaIndex) => {
+                const isAreaInActive = () => {
+                   return active.signalIndex === index && active.areas !== undefined && active.areas?.indexOf(areaIndex) !== -1;
+                }
                 let editRect = svg.rect(area.length*BASIC_STEP,BASIC_HEIGHT)
                                   .move(x, y)
                                   .fill('#CCE5FF')
@@ -360,28 +498,50 @@ const CanvasSVG = () => {
                                   .attr({cursor: 'pointer'})
                                   .opacity(0);
                 editRect.on('mouseover', () => {
-                    if(active.signalIndex != index || active.areas === undefined || active.areas?.indexOf(areaIndex) === -1) {
+                    if(!isAreaInActive()) {
                         editRect.opacity(0.5);
                     }
                 });
                 editRect.on('mouseout', () => {
-                    if(active.signalIndex != index || active.areas === undefined ||active.areas?.indexOf(areaIndex) === -1) {
+                    if(!isAreaInActive()) {
                         editRect.opacity(0);
                     }
                 })
-                editRect.on('click', () => {
-                    if(active.signalIndex != index || active.areas === undefined ||active.areas?.indexOf(areaIndex) === -1) {
+                editRect.on('click', (e:any) => {
+                    if(e.ctrlKey) { //Если нажат ctrl - добавляем или удаляем
+                        if(isAreaInActive()) {
+                            active.removeActiveArea(areaIndex);
+                        } else if(active.signalIndex === index) {
+                            active.addAreaToActive(index, areaIndex);
+                        } else {
+                            active.setAreaToActive(index, areaIndex);
+                        }
+                    } else if(e.shiftKey && active.signalIndex === index && active.areas !== undefined){ //если шифт - добавляем всё между этим и последним
+                        const lastInd = active.areas[active.areas.length-1];
+                        active.removeActiveAreas();
+                        if(areaIndex > lastInd) {
+                            for(let i = lastInd; i <= areaIndex; i++) {
+                                active.addAreaToActive(index, i);
+                            }
+                        } else {
+                            for(let i = areaIndex; i <= lastInd; i++) {
+                                active.addAreaToActive(index, i);
+                            }
+                        }
+                    } else {
                         active.setAreaToActive(index, areaIndex);
                     }
                 })
 
                 if(active.signalIndex === index && active.areas !== undefined && active.areas?.indexOf(areaIndex) !== -1) {
-                    editRect.opacity(0.7);
+                    editRect.opacity(0.6);
                 }
 
                 editRect.on('contextmenu', (e:any) => {
-                    e.preventDefault();
-                    addCustomContextMenu(svg, x, y);
+                    if(active.signalIndex !== index || active.areas?.indexOf(areaIndex) === -1) {
+                        active.setAreaToActive(index, areaIndex);
+                    }
+                    handleContextMenu(e);
                 });
                 svg.add(editRect);
                 x+=area.length * BASIC_STEP                  
@@ -392,10 +552,10 @@ const CanvasSVG = () => {
     function drawEditLine(svg: Svg, signalIndex: number, areaIndex: number, area: SignalArea, x: number, y: number, setValue: BitAreaValue) {
         //Рисуем саму линию для отображения
         let upperLine = svg.line(x, y, x+area.length*BASIC_STEP, y)
-        .stroke({width: 1, color: 'black'})
+        .stroke({width: 2, color: 'black'})
         .opacity(0)
         //Хитбокс для линии
-        let upperClick = svg.line(x,y,x+area.length*BASIC_STEP, y)
+        svg.line(x,y,x+area.length*BASIC_STEP, y)
         .stroke({width:8, color: 'black'})
         .opacity(0)
         .attr('cursor', 'pointer')
@@ -413,10 +573,10 @@ const CanvasSVG = () => {
     function drawEditLineNew(svg: Svg, signalIndex: number, signal: Signal, x: number, y: number, setValue: BitAreaValue) {
         //Рисуем саму линию для отображения
         let upperLine = svg.line(x, y, x+signal.basicAreaLength*BASIC_STEP, y)
-        .stroke({width: 1, color: 'black'})
+        .stroke({width: 2, color: 'black'})
         .opacity(0)
         //Хитбокс для линии
-        let upperClick = svg.line(x,y,x+signal.basicAreaLength*BASIC_STEP, y)
+        svg.line(x,y,x+signal.basicAreaLength*BASIC_STEP, y)
         .stroke({width:8, color: 'black'})
         .opacity(0)
         .attr('cursor', 'pointer')
@@ -431,14 +591,6 @@ const CanvasSVG = () => {
             diagram.addAreaToSignal(signalIndex, newArea);
         })
     }
-
-    function addCustomContextMenu(svg: Svg, x: number, y: number) {
-        const customContextMenu = svg.group();
-
-        // Добавьте пункты меню
-        customContextMenu.rect(60, 60).move(x,y).stroke({width:1, color: 'black'}).fill('none');
-    }
-
    
 }
 
