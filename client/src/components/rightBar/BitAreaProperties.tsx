@@ -39,7 +39,7 @@ const BitAreaProperties = () => {
                     <option value={BitAreaValue.LOW}>low</option>
                     <option value={BitAreaValue.Z}>Z</option>
                     <option value={BitAreaValue.UNKNOW}>unknown</option>
-                    <option value="" selected></option>
+                    <option hidden value=""></option>
                 </select>
             </div>
             <div className="flex flex-col justify-center text-center items-center">

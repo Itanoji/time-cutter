@@ -14,7 +14,7 @@ const AreaContextMenu = ({ x, y, isOpen, onClose, onAddRight, onAddLeft, onDelet
     }
   
     return (
-      <div className={"absolute flex flex-col bg-slate-50 border p-2 rounded-lg border-2 border-indigo-600 shadow-lg"} style={{ left: x, top: y }}>
+      <div className={"absolute flex flex-col bg-slate-50 p-2 rounded-lg border-2 border-indigo-600 shadow-lg"} style={{ left: x, top: y }}>
         <button className={"rounded-lg hover:bg-slate-200 w-24"}onClick={onAddRight}>Insert right</button>
         <button className={"rounded-lg hover:bg-slate-200 w-24"} onClick={onAddLeft}>Insert left</button>
         <button className={"rounded-lg hover:bg-slate-200 w-24"} onClick={onDelete}>Remove</button>

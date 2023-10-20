@@ -82,10 +82,10 @@ const DiagramProperties = () => {
                 <input type="checkbox" className={"w-4"} checked={diagram.showGrid} onChange={handleShowGridChanged}/>
                 <label className={"text-lg"}>Show grid</label>
             </div>
-            <div className={"flex flex-row space-x-3 justify-center"}>
+            {/* <div className={"flex flex-row space-x-3 justify-center"}>
                 <input type="checkbox" className={"w-4"}/>
                 <label className={"text-lg"}>Show axes</label>
-            </div>
+            </div> */}
         </div>
     );
 }

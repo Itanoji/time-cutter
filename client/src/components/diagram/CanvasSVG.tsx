@@ -6,6 +6,7 @@ import { BitArea, BitAreaValue, BusArea, SignalArea } from '../../store/Areas';
 import { BitSignal, BusSignal, ClkSignal, Signal, SignalType } from '../../store/Signal';
 import { SVG, Svg } from '@svgdotjs/svg.js';
 import AreaContextMenu from './AreaContextMenu';
+import svgStore from '../../store/SvgStore';
 
 const CanvasSVG = () => {
     const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number }>({
@@ -132,6 +133,7 @@ const CanvasSVG = () => {
         }
 
         drawSignals(svg);
+        svgStore.setSvgContent(svg);
         drawEdit(svg);
         return svg;
     }

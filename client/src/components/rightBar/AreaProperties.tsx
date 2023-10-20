@@ -3,6 +3,7 @@ import diagram from "../../store/Diagram";
 import { observer } from "mobx-react-lite";
 import { SignalType } from "../../store/Signal";
 import BitAreaProperties from "./BitAreaProperties";
+import BusAreaProperties from "./BusAreaProperties";
 
 const AreaProperties = () => {
     if(active.signalIndex === undefined || active.areas === undefined) {
@@ -15,6 +16,7 @@ const AreaProperties = () => {
                 <label className={"my-1 mx-2 text-center font-bold"}>Areas of {diagram.signals[active.signalIndex].name}</label>
             </div>
             {diagram.signals[active.signalIndex!].type !== SignalType.BUS? <BitAreaProperties/> : null} 
+            {diagram.signals[active.signalIndex!].type === SignalType.BUS? <BusAreaProperties/> : null}
 
        </div>
     );
