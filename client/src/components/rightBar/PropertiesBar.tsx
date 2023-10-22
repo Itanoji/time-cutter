@@ -5,6 +5,7 @@ import { ElementType } from "../../store/ActiveElement";
 import SignalProperties from "./SignalProperties";
 import diagram from "../../store/Diagram";
 import AreaProperties from "./AreaProperties";
+import DiagramSourceEditor from "./DiagramSourceEditor";
 
 const PropertiesBar = () => {
     return (
@@ -12,7 +13,8 @@ const PropertiesBar = () => {
             {
                 active.type === ElementType.Diagram? <DiagramProperties/> :
                 active.type === ElementType.Signal? <SignalProperties index={active.signalIndex!} signal={diagram.signals[active.signalIndex!]}/> : 
-                active.type === ElementType.Areas? <AreaProperties/> : null
+                active.type === ElementType.Areas? <AreaProperties/> :
+                active.type === ElementType.Source? <DiagramSourceEditor/> : null
             }
         </aside>
     );

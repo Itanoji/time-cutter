@@ -3,9 +3,12 @@ import diagram from "../../store/Diagram";
 import active from "../../store/ActiveElement";
 import { useEffect, useState, useRef } from "react";
 import FileSelect from "./FileSelect";
+import EditSelect from "./EditSelect";
 const Header = () => {
     const [fileSelect, setFileSelect] = useState(false);
     const fileRef = useRef<HTMLDivElement | null>(null); // Создаем реф
+    const [editSelect, setEditSelect] = useState(false);
+    const editRef = useRef<HTMLDivElement | null>(null);
 
     const onNameClicked = () => {
         active.setDiagramActive();
@@ -14,11 +17,18 @@ const Header = () => {
     const handleFileClicked = () => {
         setFileSelect(true);
     }
+
+    const handleEditClicked = () => {
+        setEditSelect(true);
+    }
     
     useEffect(() => {
         function handleClickOutside(e:any) {
             if (fileSelect && !fileRef.current!.contains(e.target)) {
                 setFileSelect(false);
+              }
+              if (editSelect && !editRef.current!.contains(e.target)) {
+                setEditSelect(false);
               }
         }
 
@@ -28,7 +38,7 @@ const Header = () => {
         return () => {
         document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [fileSelect]);
+    }, [fileSelect, editSelect]);
 
     return (
         <header className={"bg-gray-200 p-1 border-b border-black flex flex-row font"}>
@@ -40,8 +50,9 @@ const Header = () => {
                     <button className={"hover:bg-slate-300 rounded-lg w-10"} onClick={handleFileClicked}><u>F</u>ile</button>
                     {fileSelect? <div ref={fileRef}><FileSelect/></div> : null }
                 </div>
-                <div className={"pr-2 pl-2 hover:cursor"}>
-                    <button className={"hover:bg-slate-300 rounded-lg w-10"}><u>E</u>dit</button>
+                <div className={"relative pr-2 pl-2 hover:cursor"}>
+                    <button className={"hover:bg-slate-300 rounded-lg w-10"} onClick={handleEditClicked}><u>E</u>dit</button>
+                    {editSelect? <div ref={editRef}><EditSelect/></div> : null }
                 </div>
             </div>
             <div className={"flex-grow text-center font-bold text-3xl"}>

@@ -1,0 +1,87 @@
+{
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "steps": {
+        "type": "number"
+      },
+      "showGrid": {
+        "type": "boolean"
+      },
+      "gridInterval": {
+        "type": "number"
+      },
+      "gridSteps": {
+        "type": "number"
+      },
+      "signalHeight": {
+        "type": "number"
+      },
+      "signals": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["clk", "bus", "bit"]
+            },
+            "color": {
+                "type": "string"
+            },
+            "basicAreaLength": {
+                "type": "number"
+            },
+            "areas": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "length": {
+                        "type": "number"
+                      },
+                      "value": {
+                        "type": "string",
+                        "enum": ["1", "0", "z","~"]
+                      }
+                    },
+                    "required": ["length", "value"]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "length": {
+                        "type": "number"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "fillColor": {
+                        "type": "string"
+                      },
+                      "hatching": {
+                        "type": "boolean"
+                      },
+                      "textColor": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["length", "value", "fillColor", "hatching"]
+                  }
+                ]
+              }
+            }
+          },
+          "required": ["name", "type", "areas", "basicAreaLength", "color"]
+        }
+      }
+    },
+    "required": ["name", "steps", "showGrid", "gridInterval", "gridSteps", "signalHeight", "signals"]
+}

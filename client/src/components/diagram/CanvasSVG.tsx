@@ -256,7 +256,7 @@ const CanvasSVG = () => {
      function drawBitArea(svg: Svg, prev: BitAreaValue, x: number, y:number, area: BitArea, basicAreaLength: number) {
          let areaPath = ``;
          if(prev == null) {
-              if(area.value === BitAreaValue.HIGH || BitAreaValue.UNKNOW) {
+              if(area.value === BitAreaValue.HIGH || area.value === BitAreaValue.UNKNOW) {
                  areaPath += `M ${x} ${y}`;
               } else if(area.value === BitAreaValue.LOW) {
                  areaPath += `M ${x} ${y+diagram.signalHeight + MIN_HEGHT}`;
@@ -330,7 +330,7 @@ const CanvasSVG = () => {
      function drawClkArea(svg: Svg, prev: BitAreaValue, x: number, y:number, area: BitArea, basicAreaLength: number) {
          let areaPath = ``;
          if(prev == null) {
-              if(area.value === BitAreaValue.HIGH || BitAreaValue.UNKNOW) {
+              if(area.value === BitAreaValue.HIGH || area.value === BitAreaValue.UNKNOW) {
                  areaPath += `M ${x} ${y}`;
               } else if(area.value === BitAreaValue.LOW) {
                  areaPath += `M ${x} ${y+diagram.signalHeight + MIN_HEGHT}`;

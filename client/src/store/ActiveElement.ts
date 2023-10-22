@@ -3,7 +3,8 @@ import { makeAutoObservable } from "mobx";
 export enum ElementType {
     Diagram,
     Signal,
-    Areas
+    Areas,
+    Source
 }
 
 class ActiveElement {
@@ -49,6 +50,10 @@ class ActiveElement {
         this.signalIndex = signalIndex;
         this.areas = [areaIndex];
         this.type = ElementType.Areas;
+    }
+
+    setSourceToActive() {
+        this.type = ElementType.Source;
     }
 }
 

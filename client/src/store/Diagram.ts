@@ -1,17 +1,16 @@
 import { autorun, makeAutoObservable, reaction} from "mobx";
 import { Signal, SignalType } from "./Signal";
 import { BitArea, BitAreaValue, BusArea, SignalArea } from "./Areas";
+import { toJS } from "mobx";
 
-class Diagram {
+export class Diagram {
     name!: string;
     steps!: number;
-    showAxes!: boolean;
     showGrid!: boolean;
     gridInterval!: number;
     gridSteps!:number;
     signalHeight!: number;
     signals!: Signal[];
-    refresher: boolean = true;
 
     constructor() {
         const diagramStr = localStorage.getItem("diagram");
@@ -32,7 +31,7 @@ class Diagram {
             this.saveToLocalStorage();
           });
 
-        reaction(() => this.signals.length, ()=> this.saveToLocalStorage());
+        reaction(() => this.signals.length, ()=> toJS(this).saveToLocalStorage());
 
       
     }
@@ -40,7 +39,6 @@ class Diagram {
     private fillByDefault() {
         this.name = 'DefaultName';
         this.steps = 15;
-        this.showAxes = false;
         this.showGrid = true;
         this.gridInterval = 20;
         this.gridSteps = 20;
@@ -52,6 +50,10 @@ class Diagram {
     saveToLocalStorage() {
         const dataToSave = JSON.stringify(this);
         localStorage.setItem("diagram", dataToSave);
+    }
+
+    loadFromJson(json: string) {
+        Object.assign(this, JSON.parse(json));
     }
 
     //Имя
@@ -177,10 +179,7 @@ class Diagram {
         return max;
     }
 
-    //Обновить принудительно
-    refresh() {
-        this.refresher = !this.refresher;
-    }
+
 }
 
 const diagram = new Diagram();
