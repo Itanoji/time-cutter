@@ -8,7 +8,14 @@ import JsonEditor from "../../utils/JsonEditor";
 import isValid from "../../utils/JsonValidator";
 
 const DiagramSourceEditor = () => {
-    const [json, setJson] = useState(JSON.stringify(diagram, null, 2));
+    const regex1 = /"length"\s*:\s*"(\d+\.\d+)"/g;
+    const regex2 = /"basicAreaLength"\s*:\s*"(\d+\.\d+)"/g;
+    const convertToJson = () => {
+        return JSON.stringify(toJS(diagram), null, 2).replace(regex1, '"length": $1').replace(regex2, '"basicAreaLength": $1');
+    }
+
+    const [json, setJson] = useState(convertToJson());
+
 
     const handleJsonChange = (newJson: string) => {
         setJson(newJson);
@@ -20,7 +27,7 @@ const DiagramSourceEditor = () => {
     };
 
     useEffect(() => {
-        setJson(JSON.stringify(toJS(diagram), null, 2))
+        setJson(convertToJson())
     },[JSON.stringify(diagram, null, 2)]);
     
 

@@ -45,6 +45,10 @@ export class Diagram {
         this.signalHeight = 20;
         this.signals = [];
     }
+
+    createNew() {
+        this.fillByDefault();
+    }
     
     //Сохранить в хранилище
     saveToLocalStorage() {
