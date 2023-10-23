@@ -71,6 +71,9 @@
                       },
                       "textColor": {
                         "type": "string"
+                      },
+                      "textSize": {
+                        "type": "number"
                       }
                     },
                     "required": ["length", "value", "fillColor", "hatching"]
@@ -79,7 +82,7 @@
               }
             }
           },
-          "required": ["name", "type", "areas", "basicAreaLength", "color"]
+          "required": ["name", "type", "basicAreaLength", "color"]
         }
       }
     },

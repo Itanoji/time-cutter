@@ -42,6 +42,7 @@ export class BusArea extends SignalArea {
     fillColor: string;
     hatching: boolean;
     textColor: string;
+    textSize: number;
 
     constructor(length: number, value: string) {
         super(length);
@@ -49,12 +50,14 @@ export class BusArea extends SignalArea {
         this.fillColor = '#FFFFFF';
         this.hatching = false;
         this.textColor = '#000000';
+        this.textSize = 15;
         makeObservable(this, {
             value: observable,
             fillColor: observable,
             hatching: observable,
             textColor: observable,
-            length: observable
+            length: observable,
+            textSize: observable
           });
     }
 }

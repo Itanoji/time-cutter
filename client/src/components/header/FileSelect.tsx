@@ -3,7 +3,7 @@ import { useState } from "react";
 import ExportSelect from "./ExportSelect";
 import diagram from "../../store/Diagram";
 import isValid from "../../utils/JsonValidator";
-import { json } from "stream/consumers";
+
 const FileSelect = () => {
     const [subSelect, setSubSelect] = useState(false);
 
@@ -11,53 +11,34 @@ const FileSelect = () => {
       diagram.createNew();
     }
 
-    const jsonCorrection = (json: string) => {
-      const regex1 = /"length"\s*:\s*"(\d+\.\d+)"/g;
-      const regex2 = /"basicAreaLength"\s*:\s*"(\d+\.\d+)"/g;
-      return json.replace(/\n/g, '').replace(regex1, '"length": $1').replace(regex2, '"basicAreaLength": $1');
-    }
-
     const handleOpenClick = () => {
-        // Создаем скрытый input элемент
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = ".json";
-        fileInput.style.display = "none";
-
-        // Обработчик события change для элемента input
-        fileInput.addEventListener("change", (e:any) => {
-            const selectedFile = e.target.files[0];
-
-            if (selectedFile) {
-                // Создаем объект FileReader
-                const reader = new FileReader();
-
-                // Обработчик завершения чтения файла
-                reader.onload = (event:any) => {
-                    try {
-                        // Читаем содержимое файла как текст и парсим его как JSON
-                        const fileContent = event.target.result as string;
-                        const jsonData = JSON.parse(jsonCorrection(fileContent));
-                        if(isValid(jsonData)){
-                          diagram.loadFromJson(jsonData);
-                        } else {
-                          alert("Некорректный формат файла!");
-                        }
-                    } catch (error) {
-                        alert("Ошибка при чтении файла JSON!");
-                        console.error("Ошибка при чтении файла JSON:", error);
-                    }
-                };
-
-                // Читаем выбранный файл
-                reader.readAsText(selectedFile);
-            } else {
-                console.log("Файл не выбран.");
+      const inputElement = document.createElement('input');
+      inputElement.type = 'file';
+      inputElement.accept = '.json';
+    
+      inputElement.addEventListener('change', (event) => {
+        const file = (event.target as HTMLInputElement).files?.[0];
+    
+        if (file) {
+          const reader = new FileReader();
+    
+          reader.onload = (e) => {
+            const content = e.target?.result as string;
+    
+            try {
+              if(isValid(content)) {
+                diagram.loadFromJson(content);
+              }
+            } catch (error) {
+              console.error("Ошибка разбора JSON:", error);
             }
-        });
-
-        // Запускаем диалоговое окно выбора файла
-        fileInput.click();
+          };
+    
+          reader.readAsText(file);
+        }
+      });
+    
+      inputElement.click();
     }
 
     return (

@@ -27,6 +27,7 @@ const BitAreaProperties = () => {
     useEffect(() => {
         setLength(active.areas!.length === 1? diagram.signals[active.signalIndex!].areas[active.areas![0]].length : '');
         setValue(active.areas!.length === 1? (diagram.signals[active.signalIndex!].areas[active.areas![0]] as BitArea).value : '');
+         // eslint-disable-next-line
     },[active.areas!.length, active.areas]);
     
 

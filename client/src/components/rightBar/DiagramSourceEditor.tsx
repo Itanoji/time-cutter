@@ -1,5 +1,3 @@
-import active from "../../store/ActiveElement";
-import { BitArea, BitAreaValue } from "../../store/Areas";
 import { toJS } from "mobx";
 import diagram from "../../store/Diagram";
 import { observer } from "mobx-react-lite";
@@ -28,6 +26,7 @@ const DiagramSourceEditor = () => {
 
     useEffect(() => {
         setJson(convertToJson())
+         // eslint-disable-next-line
     },[JSON.stringify(diagram, null, 2)]);
     
 

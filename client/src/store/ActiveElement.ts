@@ -40,6 +40,7 @@ class ActiveElement {
 
     removeActiveAreas() {
         this.areas = [];
+        this.setDiagramActive();
     }
 
     removeActiveArea(index: number) {

@@ -148,6 +148,7 @@ const CanvasSVG = () => {
             }
             svgContainer.appendChild(svg.node);
         }
+         // eslint-disable-next-line
       },[createSvg()]);
 
 
@@ -164,6 +165,7 @@ const CanvasSVG = () => {
         return () => {
         document.removeEventListener('click', handleClickOutsideContextMenu);
         };
+         // eslint-disable-next-line
     }, [contextMenu.isOpen]);
 
 
@@ -174,6 +176,7 @@ const CanvasSVG = () => {
         return () => {
         window.removeEventListener('keydown', handleEscKey);
         };
+         // eslint-disable-next-line
     }, []); 
     
     return (
@@ -440,20 +443,27 @@ const CanvasSVG = () => {
 
             //Добавляем текст
             if(a.value !== null) {
-                let fontSize = 15;
+                let fontSize = a.textSize? a.textSize : 15;
+                let textColor = a.textColor? a.textColor: "#000000";
                 let localDelay = 0;
                 if(index > 0) {
                     localDelay += DELAY;
                 }
                 const text = svg.text(a.value)
-                                .move(x+(localDelay+ a.length*BASIC_STEP)/2, y+BASIC_HEIGHT/4)
-                                .font({ family: 'Arial', size: 15, anchor: 'middle', weight: 900})
-                                .fill("black")
-                                .attr({ 'text-anchor': 'middle'});
-                while(text.length() > a.length*BASIC_STEP) {
-                    fontSize--;
-                    text.size(fontSize);
-                }
+                                //.move(x+(localDelay+ a.length*BASIC_STEP)/2, y+BASIC_HEIGHT/2 )
+                                .font({ family: 'Arial', size: fontSize, anchor: 'middle',weight: 900})
+                                .fill(textColor)
+                                .attr({ 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+                const textBBox = text.bbox(); // Получаем размеры текста
+
+                const centerX = x + (localDelay + a.length * BASIC_STEP) / 2;
+                const centerY = y + BASIC_HEIGHT / 2;
+                                
+                const textX = centerX - textBBox.width / 2; // Вычисляем X-координату текста
+                const textY = centerY - textBBox.height / 2; // Вычисляем Y-координату текста
+                                
+                text.move(textX, textY);
+                                
             }
 
 

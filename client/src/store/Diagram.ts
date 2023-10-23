@@ -1,7 +1,7 @@
 import { autorun, makeAutoObservable, reaction} from "mobx";
 import { Signal, SignalType } from "./Signal";
 import { BitArea, BitAreaValue, BusArea, SignalArea } from "./Areas";
-import { toJS } from "mobx";
+import isValid from "../utils/JsonValidator";
 
 export class Diagram {
     name!: string;
@@ -14,7 +14,7 @@ export class Diagram {
 
     constructor() {
         const diagramStr = localStorage.getItem("diagram");
-        if(diagramStr) {
+        if(diagramStr && isValid(diagramStr)) {
             try {
                 Object.assign(this, JSON.parse(diagramStr));
             } catch(error) {
@@ -31,7 +31,7 @@ export class Diagram {
             this.saveToLocalStorage();
           });
 
-        reaction(() => this.signals.length, ()=> toJS(this).saveToLocalStorage());
+        reaction(() => this.signals.length, ()=> this.saveToLocalStorage());
 
       
     }
@@ -161,6 +161,14 @@ export class Diagram {
 
     changeBusAreaFillColor(signal: number, index: number, color: string) {
         (this.signals[signal].areas[index] as BusArea).fillColor = color;
+    }
+
+    changeBusAreaTextColor(signal: number, index: number, color: string) {
+        (this.signals[signal].areas[index] as BusArea).textColor = color;
+    }
+
+    changeBusAreaTextSize(signal: number, index: number, size: number) {
+        (this.signals[signal].areas[index] as BusArea).textSize = size;
     }
 
     changeBusAreaHatching(signal: number, index: number, hatching: boolean) {
