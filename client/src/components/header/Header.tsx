@@ -61,7 +61,7 @@ const Header = () => {
                 </button>
             </div>
             <div className={"mr-5 text-lg mt-4"}>
-                Login
+                
             </div>
         </header>
     );
