@@ -12,9 +12,11 @@ export enum BitAreaValue {
  */
 export abstract class SignalArea {
     length: number;
+    isGap: boolean;
 
     constructor(length: number) {
         this.length = length;
+        this.isGap = false;
     }
 }
 
@@ -29,7 +31,8 @@ export class BitArea extends SignalArea {
         this.value = value;
         makeObservable(this, {
             value: observable,
-            length: observable
+            length: observable,
+            isGap: observable
           });
     }
 }
@@ -57,7 +60,8 @@ export class BusArea extends SignalArea {
             hatching: observable,
             textColor: observable,
             length: observable,
-            textSize: observable
+            textSize: observable,
+            isGap: observable
           });
     }
 }

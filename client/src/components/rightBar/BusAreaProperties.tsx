@@ -6,12 +6,13 @@ import {useState, useEffect} from 'react';
 
 const BusAreaProperties = () => {
     const getFirst = () => {return diagram.signals[active.signalIndex!].areas[active.areas![0]] as BusArea};
-    const [value, setValue] = useState(active.areas!.length === 1? getFirst().value : '');
-    const [length, setLength] = useState(active.areas!.length === 1? getFirst().length : '');
-    const [fillColor, setFillColor] = useState(active.areas!.length === 1? getFirst().fillColor : '#FFFFFF');
-    const [hatching, setHatching] = useState(active.areas!.length === 1? getFirst().hatching : false);
-    const [textColor, setTextColor] = useState(active.areas!.length === 1? getFirst().textColor : '#000000');
-    const [textSize, setTextSize] = useState(active.areas!.length === 1? getFirst().textSize : 15);
+    const [value, setValue] = useState(active.isSignleArea()? getFirst().value : '');
+    const [length, setLength] = useState(active.isSignleArea()? getFirst().length : '');
+    const [fillColor, setFillColor] = useState(active.isSignleArea()? getFirst().fillColor : '#FFFFFF');
+    const [hatching, setHatching] = useState(active.isSignleArea()? getFirst().hatching : false);
+    const [textColor, setTextColor] = useState(active.isSignleArea()? getFirst().textColor : '#000000');
+    const [textSize, setTextSize] = useState(active.isSignleArea()? getFirst().textSize : 15);
+    const [isGap, setIsGap] = useState(active.isSignleArea()? getFirst().isGap : false);
 
     const handleValueChanged=(e:any) => {
         if(!e.currentTarget.value) return;
@@ -60,6 +61,13 @@ const BusAreaProperties = () => {
         }
     }
 
+    const handleGapChanged = (e:any) => {
+        setIsGap(e.currentTarget.checked);
+        for(let i = 0; i < active.areas!.length; i++) {
+            diagram.changeAreaGap(active.signalIndex!,active.areas![i], e.currentTarget.checked);
+        }
+    }
+
     useEffect(() => {
         setLength(active.areas!.length === 1? getFirst().length : '');
         setValue(active.areas!.length === 1?  getFirst().value : '');
@@ -67,6 +75,7 @@ const BusAreaProperties = () => {
         setHatching(active.areas!.length === 1?  getFirst().hatching : false);
         setTextSize(active.areas!.length === 1? getFirst().textSize : 15);
         setTextColor(active.areas!.length === 1? getFirst().textColor : '#000000');
+        setIsGap(active.isSignleArea()? getFirst().isGap : false);
          // eslint-disable-next-line
     },[active.areas!.length, active.areas]);
     
@@ -103,6 +112,10 @@ const BusAreaProperties = () => {
                     <label className="text-center">Text size</label>
                     <input type="number" value={textSize} onChange={handleTextSizeChanged} className={"border-2 border-slate-600 rounded-sm text-center w-16"} min={1} step={1} onKeyDown={(e) => e.preventDefault()}/>
                 </div>
+                <div className={"flex flex-row space-x-3 justify-center"}>
+                    <input type="checkbox" className={"w-4"} checked={isGap} onChange={handleGapChanged}/>
+                    <label className={"text-lg"}>Gap Mark</label>
+                </div>  
             </div>
        </div>
 

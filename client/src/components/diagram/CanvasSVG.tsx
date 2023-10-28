@@ -7,6 +7,7 @@ import { BitSignal, BusSignal, ClkSignal, Signal, SignalType } from '../../store
 import { SVG, Svg } from '@svgdotjs/svg.js';
 import AreaContextMenu from './AreaContextMenu';
 import svgStore from '../../store/SvgStore';
+import { drawGapMark } from '../../utils/SVGTools';
 
 const CanvasSVG = () => {
     const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number }>({
@@ -311,6 +312,11 @@ const CanvasSVG = () => {
            const path = svg.path(hatPath).fill(pattern).stroke('none');
            svg.add(path);
          }
+
+        //Рисуем метку пропуска
+        if(area.isGap) {
+            drawGapMark(svg, (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
+        }
          
          //Рисуем линию
          areaPath+= ` H ${x+area.length * (diagram.gridInterval+MIN_INTERVAL)}`;
@@ -365,6 +371,11 @@ const CanvasSVG = () => {
            let hatPath = `M ${x} ${y} H ${x+area.length * BASIC_STEP} V ${y+BASIC_HEIGHT} H ${x} V ${y}`;
            const path = svg.path(hatPath).fill(pattern).stroke('none');
            svg.add(path);
+        }
+
+        //Рисуем метку пропуска
+        if(area.isGap) {
+            drawGapMark(svg, (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
         }
          
          //Рисуем линию
@@ -464,6 +475,11 @@ const CanvasSVG = () => {
                                 
                 text.move(textX, textY);
                                 
+            }
+
+            //Рисуем метку пропуска
+            if(a.isGap) {
+                drawGapMark(svg, (a.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
             }
 
 

@@ -159,6 +159,10 @@ export class Diagram {
         this.signals[signal].areas[index].length = length;
     }
 
+    changeAreaGap(signal: number, index: number, isGap: boolean) {
+        this.signals[signal].areas[index].isGap = isGap;
+    }
+
     changeBusAreaFillColor(signal: number, index: number, color: string) {
         (this.signals[signal].areas[index] as BusArea).fillColor = color;
     }

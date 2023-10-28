@@ -56,6 +56,13 @@ class ActiveElement {
     setSourceToActive() {
         this.type = ElementType.Source;
     }
+
+    isSignleArea() {
+        if(this.type === ElementType.Areas && this.areas !== undefined && this.areas.length > 1) {
+            return false;
+        }
+        return true;
+    }
 }
 
 const active = new ActiveElement();

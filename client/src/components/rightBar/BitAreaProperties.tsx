@@ -4,9 +4,14 @@ import diagram from "../../store/Diagram";
 import { observer } from "mobx-react-lite";
 import {useState, useEffect} from 'react';
 
+function getFirstArea() {
+   return diagram.signals[active.signalIndex!].areas[active.areas![0]];
+}
+
 const BitAreaProperties = () => {
-    const [value, setValue] = useState(active.areas!.length === 1? (diagram.signals[active.signalIndex!].areas[active.areas![0]] as BitArea).value : '');
-    const [length, setLength] = useState(active.areas!.length === 1? diagram.signals[active.signalIndex!].areas[active.areas![0]].length : '');
+    const [value, setValue] = useState(active.isSignleArea()? (getFirstArea() as BitArea).value : '');
+    const [length, setLength] = useState(active.isSignleArea()? getFirstArea().length : '');
+    const [isGap, setIsGap] = useState(active.isSignleArea()? getFirstArea().isGap : false);
 
     const handleValueChanged=(e:any) => {
         if(!e.currentTarget.value) return;
@@ -24,9 +29,18 @@ const BitAreaProperties = () => {
         }
     }
 
+    const handleGapChanged = (e:any) => {
+        setIsGap(e.currentTarget.checked);
+        for(let i = 0; i < active.areas!.length; i++) {
+            diagram.changeAreaGap(active.signalIndex!,active.areas![i], e.currentTarget.checked);
+        }
+    }
+
+
     useEffect(() => {
-        setLength(active.areas!.length === 1? diagram.signals[active.signalIndex!].areas[active.areas![0]].length : '');
-        setValue(active.areas!.length === 1? (diagram.signals[active.signalIndex!].areas[active.areas![0]] as BitArea).value : '');
+        setLength(active.isSignleArea()? getFirstArea().length : '');
+        setValue(active.isSignleArea()? (getFirstArea() as BitArea).value : '');
+        setIsGap(active.isSignleArea()? getFirstArea().isGap : false);
          // eslint-disable-next-line
     },[active.areas!.length, active.areas]);
     
@@ -46,6 +60,10 @@ const BitAreaProperties = () => {
             <div className="flex flex-col justify-center text-center items-center">
                     <label className="text-center">Length</label>
                     <input type="number" value={length} onChange={handleLengthChanged} className={"border-2 border-slate-600 rounded-sm text-center w-16"} min={0.1} step={0.1} lang="en" onKeyDown={(e) => e.preventDefault()}/>
+            </div>
+            <div className={"flex flex-row space-x-3 justify-center"}>
+                <input type="checkbox" className={"w-4"} checked={isGap} onChange={handleGapChanged}/>
+                <label className={"text-lg"}>Gap Mark</label>
             </div>  
 
         </>
