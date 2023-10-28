@@ -315,7 +315,7 @@ const CanvasSVG = () => {
 
         //Рисуем метку пропуска
         if(area.isGap) {
-            drawGapMark(svg, (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
+            drawGapMark(svg, x + (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
         }
          
          //Рисуем линию
@@ -375,7 +375,7 @@ const CanvasSVG = () => {
 
         //Рисуем метку пропуска
         if(area.isGap) {
-            drawGapMark(svg, (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
+            drawGapMark(svg, x + (area.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
         }
          
          //Рисуем линию
@@ -479,7 +479,7 @@ const CanvasSVG = () => {
 
             //Рисуем метку пропуска
             if(a.isGap) {
-                drawGapMark(svg, (a.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
+                drawGapMark(svg, x + (a.length * BASIC_STEP) / 2, y + BASIC_HEIGHT / 2, BASIC_HEIGHT);
             }
 
 
